@@ -1,10 +1,11 @@
-import { Cpu, Database, FileText, KeyRound, ShieldCheck } from "lucide-react";
+import { Cpu, Database, FileText, KeyRound, LogOut, ShieldCheck } from "lucide-react";
 import { api } from "../api";
 import { useAsync } from "../hooks";
 import { Loading, PageHeader } from "../components/ui";
 
 export function Settings() {
   const { data: ai } = useAsync(() => api.aiStatus(), []);
+  const { data: auth } = useAsync(() => api.authStatus(), []);
   return (
     <div className="page narrow">
       <PageHeader title="Paramètres" subtitle="Intelligence artificielle, données et formats pris en charge." />
@@ -43,6 +44,15 @@ export function Settings() {
           <div className="card-head"><h2 className="row gap-8"><Database size={16} /> Données</h2></div>
           <div className="card-body small muted">Vos cours, QCM et résultats sont enregistrés sur le serveur EXAMIA (base SQLite et dossier de fichiers). Seuls les extraits de cours nécessaires à la génération sont transmis au fournisseur d'IA.</div>
         </div>
+        {auth?.required && (
+          <div className="card card-pad row gap-12 wrap between">
+            <div>
+              <div style={{ fontWeight: 600 }}>Session</div>
+              <div className="small muted">Accès protégé par code. Déconnectez-vous sur un appareil partagé.</div>
+            </div>
+            <button className="btn" onClick={async () => { await api.logout(); window.location.href = "/"; }}><LogOut /> Se déconnecter</button>
+          </div>
+        )}
         <div className="callout primary">
           <div className="callout-title"><ShieldCheck /> À propos des questions</div>
           EXAMIA crée des questions d'entraînement inspirées du format des examens des facultés de sciences de la santé. Il ne reproduit pas de sujets officiels. Vérifiez toujours les corrections signalées « hors cours ».

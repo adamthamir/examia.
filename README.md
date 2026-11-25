@@ -27,6 +27,27 @@ npm start                   # http://localhost:3001
 Sans clé d'API, l'application fonctionne en **mode démo** : un générateur local fabrique des questions
 à trous et des affirmations altérées tirées mot pour mot du cours (utile pour tester, pédagogiquement limité).
 
+## Mise en ligne (application installable)
+
+EXAMIA est une **PWA** : une fois en ligne, elle s'installe depuis le navigateur
+(« Ajouter à l'écran d'accueil » sur téléphone, icône d'installation sur ordinateur).
+
+**Render (recommandé)** — le fichier `render.yaml` décrit tout le service :
+
+1. Poussez ce dépôt sur GitHub.
+2. Sur Render : *New → Blueprint* → choisissez le dépôt.
+3. Renseignez `ANTHROPIC_API_KEY` et `EXAMIA_ACCESS_CODE` quand Render les demande.
+4. Ouvrez l'adresse `https://examia-xxxx.onrender.com`, saisissez le code, puis installez l'application.
+
+Un **disque persistant** est indispensable (base SQLite + fichiers importés) : sans lui, les données
+sont effacées à chaque redémarrage. Il faut donc une offre payante (plan *Starter* + disque) ;
+vérifiez les tarifs actuels sur render.com.
+
+**Autres hébergeurs** (Railway, Fly.io, VPS) : utilisez le `Dockerfile` et montez un volume sur `/data`.
+
+> En ligne, définissez toujours `EXAMIA_ACCESS_CODE` : sans lui, toute personne connaissant
+> l'adresse pourrait utiliser l'application et consommer votre crédit IA.
+
 ## Fonctionnalités (MVP)
 
 | Domaine | Ce qui est livré |

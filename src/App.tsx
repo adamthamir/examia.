@@ -12,11 +12,13 @@ import { Results } from "./pages/Results";
 import { History } from "./pages/History";
 import { Settings } from "./pages/Settings";
 import { Compass } from "lucide-react";
+import { AuthGate } from "./components/AuthGate";
 
 export function App() {
   return (
     <BrowserRouter>
       <DialogProvider>
+        <AuthGate>
         <Routes>
           <Route path="/examen/:id" element={<Exam />} />
           <Route element={<Layout />}>
@@ -32,6 +34,7 @@ export function App() {
             <Route path="*" element={<div className="page"><Empty icon={<Compass />} title="Page introuvable" action={<Link className="btn" to="/">Retour à l'accueil</Link>} /></div>} />
           </Route>
         </Routes>
+        </AuthGate>
       </DialogProvider>
     </BrowserRouter>
   );

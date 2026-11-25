@@ -1,0 +1,30 @@
+# Déploiement Render (Blueprint) : Dashboard → New → Blueprint → choisir ce dépôt.
+# Le disque persistant conserve la base SQLite et les cours importés entre les redémarrages.
+services:
+  - type: web
+    name: examia
+    runtime: node
+    plan: starter
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: DATA_DIR
+        value: /var/data
+      - key: EXAMIA_MODEL
+        value: claude-opus-5-5
+      - key: EXAMIA_EFFORT
+        value: high
+      - key: SESSION_SECRET
+        generateValue: true
+      # Saisis dans le tableau de bord Render au moment du déploiement (jamais dans le code) :
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: EXAMIA_ACCESS_CODE
+        sync: false
+    disk:
+      name: examia-data
+      mountPath: /var/data
+      sizeGB: 1

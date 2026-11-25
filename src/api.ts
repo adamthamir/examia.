@@ -17,6 +17,7 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   const headers: Record<string, string> = {};
   if (init.body && !(init.body instanceof FormData)) headers["Content-Type"] = "application/json";
   const res = await fetch(`/api${path}`, { ...init, headers: { ...headers, ...(init.headers as object) } });
+  if (res.status === 401 && !path.startsWith("/auth/")) window.dispatchEvent(new Event("examia:unauthorized"));
   if (res.status === 204) return undefined as T;
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error((data as { error?: string }).error || `Erreur ${res.status}`);
@@ -25,6 +26,10 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 const body = (data: unknown) => JSON.stringify(data);
 
 export const api = {
+  authStatus: () => request<{ required: boolean; authenticated: boolean }>("/auth/status"),
+  login: (code: string) => request<{ ok: true }>("/auth/login", { method: "POST", body: body({ code }) }),
+  logout: () => request<{ ok: true }>("/auth/logout", { method: "POST" }),
+
   aiStatus: () => request<AiStatus>("/ai/status"),
   dashboard: () => request<DashboardStats>("/dashboard"),
 
